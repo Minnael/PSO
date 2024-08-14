@@ -13,13 +13,13 @@ def alternar_pausa(event):
     pausado = not pausado  # ALTERNA ENTRE PAUSADO E NÃO PAUSADO
 
 class PSO:
-    def __init__(self, funcao, inicio_particulas, limites, num_particulas, num_iteracoes):
+    def __init__(self, funcao, limites, num_particulas, num_iteracoes):
         err_best_g = -1
         pos_best_g = []
 
         enxame = []
         for i in range(num_particulas):
-            enxame.append(Enxame(inicio_particulas))
+            enxame.append(Enxame())
 
         # INICIALIZA O GRÁFICO
         fig = plt.figure(figsize=(12, 12))
@@ -43,7 +43,7 @@ class PSO:
                     err_best_g = float(enxame[j].err_i)
 
             for j in range(num_particulas):
-                enxame[j].atualizar_velocidade(pos_best_g)
+                enxame[j].atualizar_velocidade(pos_best_g, i, num_iteracoes)
                 enxame[j].atualizar_posicao(limites)
 
             # print(f"Iteração {i+1}")

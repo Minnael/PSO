@@ -5,24 +5,21 @@ def Grafico(enxame, iteracao, funcao, ax):
    ax.clear()  # LIMPA O GRÁFICO ANTERIOR
     
    # CRIAR A MALHA PARA X, Z
-   x = np.linspace(-10, 10, 10)
-   z = np.linspace(-10, 10, 10)
-   x, z = np.meshgrid(x, z)
+   x = np.linspace(-500, 500, 100)
+   y = np.linspace(-500, 500, 100)
+   x, y = np.meshgrid(x, y)
     
    # CALCULA A FUNÇÃO NA MALHA X, Z
-   y = funcao(x, z)  # Chama a nova função com x e z
+   z = funcao(x, y)  # Chama a nova função com x e z
     
    # CONFIGURAÇÕES DO GRÁFICO
    ax.set_title(f'Iteração {iteracao}')
    ax.set_xlabel('X')
    ax.set_ylabel('Z')
    ax.set_zlabel('f(x, z)')
-   ax.set_xlim([-10, 10])
-   ax.set_ylim([-10, 10])
-   ax.set_zlim([-200, 200])
 
    # PLOTAGEM DA SUPERFÍCIE
-   ax.plot_surface(x, z, y, cmap='viridis', alpha=0.6)
+   ax.plot_surface(x, y, z, cmap='viridis', alpha=0.6)
     
 
    # LISTA DE CORES PREDEFINIDAS
@@ -43,3 +40,47 @@ def Grafico(enxame, iteracao, funcao, ax):
       ax.scatter(particle_x, particle_z, particle_y, color=color, s=100)
     
    plt.pause(1)
+
+'''
+ESBOÇO DA FUNÇÃO APENAS:
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+# Definição da função
+def funcao(x, y):
+    return 2 * ((-x * np.sin(np.sqrt(abs(x)))) - y * np.sin(np.sqrt(abs(y)))) * (x / 250)
+
+# Criação da grade de valores para x e y
+x = np.linspace(-500, 500, 100)
+y = np.linspace(-500, 500, 100)
+x, y = np.meshgrid(x, y)
+
+# Cálculo dos valores de z com base na função
+z = funcao(x, y)
+
+# Criação do gráfico 3D
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+# Plotagem da superfície
+ax.plot_surface(x, y, z, cmap='viridis')
+
+# Adição de rótulos aos eixos
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('f(X, Y)')
+
+# Exibição do gráfico
+plt.show()
+'''
+
+
+'''
+   RASTRIGIN:
+   x = np.linspace(-5.12, 5.12, 400)
+   z = np.linspace(-5.12, 5.12, 400)
+   ax.set_xlim([-6, 6])
+   ax.set_ylim([-6, 6])
+   ax.set_zlim([0, 100])
+'''
