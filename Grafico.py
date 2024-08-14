@@ -14,12 +14,12 @@ def Grafico(enxame, iteracao, funcao, ax):
     
    # CONFIGURAÇÕES DO GRÁFICO
    ax.set_title(f'Iteração {iteracao}')
-   ax.set_xlabel('X')
-   ax.set_ylabel('Z')
-   ax.set_zlabel('f(x, z)')
+   ax.set_xlabel('x')
+   ax.set_ylabel('y')
+   ax.set_zlabel('f(x, y)')
 
    # PLOTAGEM DA SUPERFÍCIE
-   ax.plot_surface(x, y, z, cmap='viridis', alpha=0.6)
+   ax.plot_surface(x, y, z, cmap='viridis', alpha=0.4)
     
 
    # LISTA DE CORES PREDEFINIDAS
@@ -27,8 +27,8 @@ def Grafico(enxame, iteracao, funcao, ax):
     
    # PLOTAGEM DAS PARTÍCULAS COM CORES PREDEFINIDAS
    for idx, particle in enumerate(enxame):
-      particle_x = particle.position_i[0]  # EXTRAI X DA POSIÇÃO DA PARTICULA
-      particle_z = particle.position_i[2]  # EXTRAI Z DA POSICAO DA PARTICULA
+      particle_x = particle.posicao_i[0]  # EXTRAI X DA POSIÇÃO DA PARTICULA
+      particle_z = particle.posicao_i[2]  # EXTRAI Z DA POSICAO DA PARTICULA
         
       # CHAMA A NOVA FUNÇÃO COM X, Z PARA CALCULAR Y
       particle_y = funcao(particle_x, particle_z)
@@ -40,6 +40,9 @@ def Grafico(enxame, iteracao, funcao, ax):
       ax.scatter(particle_x, particle_z, particle_y, color=color, s=100)
     
    plt.pause(1)
+
+
+
 
 '''
 ESBOÇO DA FUNÇÃO APENAS:

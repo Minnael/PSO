@@ -39,7 +39,7 @@ class PSO:
                 enxame[j].evaluate(funcao)
 
                 if enxame[j].err_i < err_best_g or err_best_g == -1:
-                    pos_best_g = list(enxame[j].position_i)
+                    pos_best_g = list(enxame[j].posicao_i)
                     err_best_g = float(enxame[j].err_i)
 
             for j in range(num_particulas):
