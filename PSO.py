@@ -1,18 +1,26 @@
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.widgets import Button
 from mpl_toolkits.mplot3d import Axes3D
 
+# VARIÁVEL GLOBAL PARA CONTROLAR O ESTADO DE PAUSA
+pausado = False
+
+# FUNÇÃO CHAMADA PELO BOTÃO PAUSE
+def alternar_pausa(event):
+    global pausado
+    pausado = not pausado  # ALTERNA ENTRE PAUSADO E NÃO PAUSADO
 
 def plot_particles(enxame, iteracao, ax):
     ax.clear()  # LIMPA O GRÁFICO ANTERIOR
     
-    # Cria a malha para x e z
+    # CRIAR A MALHA PARA X, Z
     x = np.linspace(-10, 10, 10)
     z = np.linspace(-10, 10, 10)
     x, z = np.meshgrid(x, z)
     
-    # Calcula a função na malha (x, z)
+    # CALCULA A FUNÇÃO NA MALHA X, Z
     y = funcao(x, z)  # Chama a nova função com x e z
     
     # CONFIGURAÇÕES DO GRÁFICO
@@ -26,29 +34,28 @@ def plot_particles(enxame, iteracao, ax):
 
     # PLOTAGEM DA SUPERFÍCIE
     ax.plot_surface(x, z, y, cmap='viridis', alpha=0.6)
+    
 
     # LISTA DE CORES PREDEFINIDAS
     colors = ['red', 'yellow', 'green', 'blue', 'pink', 'purple', 'orange', 'black']
     
     # PLOTAGEM DAS PARTÍCULAS COM CORES PREDEFINIDAS
     for idx, particle in enumerate(enxame):
-        particle_x = particle.position_i[0]  # Extrai x da posição da partícula
-        particle_z = particle.position_i[2]  # Extrai z da posição da partícula
+        particle_x = particle.position_i[0]  # EXTRAI X DA POSIÇÃO DA PARTICULA
+        particle_z = particle.position_i[2]  # EXTRAI Z DA POSICAO DA PARTICULA
         
-        # Chama a nova função com x e z para calcular y
+        # CHAMA A NOVA FUNÇÃO COM X, Z PARA CALCULAR Y
         particle_y = funcao(particle_x, particle_z)
         
-        # Escolhe a cor para a partícula
+        # ESCOLHE A COR PARA A PARTICULA
         color = colors[idx % len(colors)]
         
-        # Plota a partícula
+        # PLOTA A PARTICULA
         ax.scatter(particle_x, particle_z, particle_y, color=color, s=100)
+    
+    plt.pause(1)
 
-    plt.pause(1)  # Pausa de x segundos para visualizar a atualização
-
-
-
-class Particle:
+class Enxame:
     def __init__(self, inicio_particulas):
         self.position_i = []          # POSIÇÃO DA PARTÍCULA
         self.velocity_i = []          # VELOCIDADE DA PARTÍCULA
@@ -71,7 +78,7 @@ class Particle:
         # Chama a função passando x e z
         self.err_i = funcao(x, z)
 
-        # Atualiza o melhor erro e a melhor posição
+        # ATUALIZA O MELHOR ERRO E A MELHOR POSIÇÃO
         if self.err_i < self.err_best_i or self.err_best_i == -1:
             self.pos_best_i = self.position_i.copy()
             self.err_best_i = self.err_i
@@ -105,11 +112,19 @@ class PSO:
 
         enxame = []
         for i in range(num_particulas):
-            enxame.append(Particle(inicio_particulas))
+            enxame.append(Enxame(inicio_particulas))
 
         # INICIALIZA O GRÁFICO
         fig = plt.figure(figsize=(12, 12))
         ax = fig.add_subplot(111, projection='3d')
+
+        # ADICIONA O BOTÃO DE PAUSE
+        pause_posicao = plt.axes([0.85, 0.03, 0.1, 0.05])
+        pause_botao = Button(pause_posicao, 'Pause')
+        #pause_botao.label.set_color('red')
+        #pause_botao.color = 'red'
+        pause_botao.hovercolor = 'lightgreen'
+        pause_botao.on_clicked(alternar_pausa)
 
         i = 0
         while i < num_iteracoes:
@@ -130,6 +145,10 @@ class PSO:
             
             plot_particles(enxame, i+1, ax)
 
+            # ESPERA O BOTÃO DE MOUSE SER DESATIVADO
+            while pausado:
+                plt.pause(0.1)
+
             i += 1
 
         print(f'  POSICAO FINAL: {pos_best_g}')
@@ -139,5 +158,6 @@ class PSO:
 
 def funcao(x, z):
     return 2*x*z  # CORRESPONDE A 2 * X * Z
+
 
 PSO(funcao, [10, 10, 10], [(-10, 10), (-10, 10), (-10, 10)], num_particulas=20, num_iteracoes=20)
