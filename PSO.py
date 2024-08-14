@@ -1,8 +1,8 @@
-import random
-import numpy as np
+from Enxame import Enxame
+from Grafico import Grafico
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Button
-from mpl_toolkits.mplot3d import Axes3D
+
 
 # VARIÁVEL GLOBAL PARA CONTROLAR O ESTADO DE PAUSA
 pausado = False
@@ -11,99 +11,6 @@ pausado = False
 def alternar_pausa(event):
     global pausado
     pausado = not pausado  # ALTERNA ENTRE PAUSADO E NÃO PAUSADO
-
-def plot_particles(enxame, iteracao, ax):
-    ax.clear()  # LIMPA O GRÁFICO ANTERIOR
-    
-    # CRIAR A MALHA PARA X, Z
-    x = np.linspace(-10, 10, 10)
-    z = np.linspace(-10, 10, 10)
-    x, z = np.meshgrid(x, z)
-    
-    # CALCULA A FUNÇÃO NA MALHA X, Z
-    y = funcao(x, z)  # Chama a nova função com x e z
-    
-    # CONFIGURAÇÕES DO GRÁFICO
-    ax.set_title(f'Iteração {iteracao}')
-    ax.set_xlabel('X')
-    ax.set_ylabel('Z')
-    ax.set_zlabel('f(x, z)')
-    ax.set_xlim([-10, 10])
-    ax.set_ylim([-10, 10])
-    ax.set_zlim([-200, 200])
-
-    # PLOTAGEM DA SUPERFÍCIE
-    ax.plot_surface(x, z, y, cmap='viridis', alpha=0.6)
-    
-
-    # LISTA DE CORES PREDEFINIDAS
-    colors = ['red', 'yellow', 'green', 'blue', 'pink', 'purple', 'orange', 'black']
-    
-    # PLOTAGEM DAS PARTÍCULAS COM CORES PREDEFINIDAS
-    for idx, particle in enumerate(enxame):
-        particle_x = particle.position_i[0]  # EXTRAI X DA POSIÇÃO DA PARTICULA
-        particle_z = particle.position_i[2]  # EXTRAI Z DA POSICAO DA PARTICULA
-        
-        # CHAMA A NOVA FUNÇÃO COM X, Z PARA CALCULAR Y
-        particle_y = funcao(particle_x, particle_z)
-        
-        # ESCOLHE A COR PARA A PARTICULA
-        color = colors[idx % len(colors)]
-        
-        # PLOTA A PARTICULA
-        ax.scatter(particle_x, particle_z, particle_y, color=color, s=100)
-    
-    plt.pause(1)
-
-class Enxame:
-    def __init__(self, inicio_particulas):
-        self.position_i = []          # POSIÇÃO DA PARTÍCULA
-        self.velocity_i = []          # VELOCIDADE DA PARTÍCULA
-        self.pos_best_i = []          # MELHOR POSIÇÃO INDIVIDUAL
-        self.err_best_i = -1          # MELHOR ERRO INDIVIDUAL
-        self.err_i = -1               # ERRO INDIVIDUAL
-
-        global dimensoes
-        dimensoes = len(inicio_particulas)
-
-        for i in range(dimensoes):
-            self.velocity_i.append(random.uniform(-1, 1))
-            self.position_i.append(inicio_particulas[i])
-
-    def evaluate(self, funcao):
-        # Supondo que `self.position_i` seja uma lista com pelo menos dois elementos.
-        x = self.position_i[0]  # Primeiro elemento é x
-        z = self.position_i[2]  # Terceiro elemento é z
-
-        # Chama a função passando x e z
-        self.err_i = funcao(x, z)
-
-        # ATUALIZA O MELHOR ERRO E A MELHOR POSIÇÃO
-        if self.err_i < self.err_best_i or self.err_best_i == -1:
-            self.pos_best_i = self.position_i.copy()
-            self.err_best_i = self.err_i
-
-    def atualizar_velocidade(self, pos_best_g):
-        w = 0.5  # CONSTANTE DE INERCIA
-        c1 = 1   # COGNITIVO
-        c2 = 2   # SOCIAL
-
-        for i in range(dimensoes):
-            r1 = random.random()
-            r2 = random.random()
-
-            vel_cognitiva = c1 * r1 * (self.pos_best_i[i] - self.position_i[i])
-            vel_social = c2 * r2 * (pos_best_g[i] - self.position_i[i])
-            self.velocity_i[i] = w * self.velocity_i[i] + vel_cognitiva + vel_social
-
-    def atualizar_posicao(self, limites):
-        for i in range(dimensoes):
-            self.position_i[i] = self.position_i[i] + self.velocity_i[i]
-
-            if self.position_i[i] > limites[i][1]:
-                self.position_i[i] = limites[i][1]
-            if self.position_i[i] < limites[i][0]:
-                self.position_i[i] = limites[i][0]
 
 class PSO:
     def __init__(self, funcao, inicio_particulas, limites, num_particulas, num_iteracoes):
@@ -143,7 +50,7 @@ class PSO:
             # for index, particle in enumerate(swarm):
             # print(f"Partícula {index+1}: Posição = {particle.position_i}")
             
-            plot_particles(enxame, i+1, ax)
+            Grafico(enxame, i+1, funcao, ax)
 
             # ESPERA O BOTÃO DE MOUSE SER DESATIVADO
             while pausado:
@@ -155,9 +62,3 @@ class PSO:
         print(f'RESULTADO FINAL: {err_best_g}')
 
         plt.show()  # MANTÉM O GRÁFICO FINAL ABERTO
-
-def funcao(x, z):
-    return 2*x*z  # CORRESPONDE A 2 * X * Z
-
-
-PSO(funcao, [10, 10, 10], [(-10, 10), (-10, 10), (-10, 10)], num_particulas=20, num_iteracoes=20)
