@@ -3,22 +3,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-#--- FUNÇÃO DE CUSTO ----------------------------------------------------------+
 
-def func_custom(x):
-    return 2 * x[0] * x[2]  # Corresponde a 2 * x * z
-
-#--- PRINCIPAL ----------------------------------------------------------------+
-
-def plot_particles(swarm, iteration, ax):
-    ax.clear()  # Limpa o gráfico anterior
-    x = np.linspace(-10, 10, 100)
-    z = np.linspace(-10, 10, 100)
+def plot_particles(enxame, iteracao, ax):
+    ax.clear()  # LIMPA O GRÁFICO ANTERIOR
+    
+    # Cria a malha para x e z
+    x = np.linspace(-10, 10, 10)
+    z = np.linspace(-10, 10, 10)
     x, z = np.meshgrid(x, z)
-    y = func_custom([x, 0, z])  # Calcula a função na malha
-
-    # Configurações do gráfico
-    ax.set_title(f'Iteração {iteration}')
+    
+    # Calcula a função na malha (x, z)
+    y = funcao(x, z)  # Chama a nova função com x e z
+    
+    # CONFIGURAÇÕES DO GRÁFICO
+    ax.set_title(f'Iteração {iteracao}')
     ax.set_xlabel('X')
     ax.set_ylabel('Z')
     ax.set_zlabel('f(x, z)')
@@ -26,47 +24,64 @@ def plot_particles(swarm, iteration, ax):
     ax.set_ylim([-10, 10])
     ax.set_zlim([-200, 200])
 
-    # Plotagem da superfície
+    # PLOTAGEM DA SUPERFÍCIE
     ax.plot_surface(x, z, y, cmap='viridis', alpha=0.6)
 
-    # Lista de cores predefinidas
+    # LISTA DE CORES PREDEFINIDAS
     colors = ['red', 'yellow', 'green', 'blue', 'pink', 'purple', 'orange', 'black']
     
-    # Plotagem das partículas com cores predefinidas
-    for idx, particle in enumerate(swarm):
-        particle_x = particle.position_i[0]
-        particle_z = particle.position_i[2]
-        particle_y = func_custom(particle.position_i)
-        color = colors[idx % len(colors)]  # Escolhe a cor com base no índice
+    # PLOTAGEM DAS PARTÍCULAS COM CORES PREDEFINIDAS
+    for idx, particle in enumerate(enxame):
+        particle_x = particle.position_i[0]  # Extrai x da posição da partícula
+        particle_z = particle.position_i[2]  # Extrai z da posição da partícula
+        
+        # Chama a nova função com x e z para calcular y
+        particle_y = funcao(particle_x, particle_z)
+        
+        # Escolhe a cor para a partícula
+        color = colors[idx % len(colors)]
+        
+        # Plota a partícula
         ax.scatter(particle_x, particle_z, particle_y, color=color, s=100)
 
-    plt.pause(1)  # Pausa de 2 segundos para visualizar a atualização
+    plt.pause(1)  # Pausa de x segundos para visualizar a atualização
+
+
 
 class Particle:
-    def __init__(self, x0):
-        self.position_i = []          # posição da partícula
-        self.velocity_i = []          # velocidade da partícula
-        self.pos_best_i = []          # melhor posição individual
-        self.err_best_i = -1          # melhor erro individual
-        self.err_i = -1               # erro individual
+    def __init__(self, inicio_particulas):
+        self.position_i = []          # POSIÇÃO DA PARTÍCULA
+        self.velocity_i = []          # VELOCIDADE DA PARTÍCULA
+        self.pos_best_i = []          # MELHOR POSIÇÃO INDIVIDUAL
+        self.err_best_i = -1          # MELHOR ERRO INDIVIDUAL
+        self.err_i = -1               # ERRO INDIVIDUAL
 
-        for i in range(num_dimensions):
+        global dimensoes
+        dimensoes = len(inicio_particulas)
+
+        for i in range(dimensoes):
             self.velocity_i.append(random.uniform(-1, 1))
-            self.position_i.append(x0[i])
+            self.position_i.append(inicio_particulas[i])
 
-    def evaluate(self, costFunc):
-        self.err_i = costFunc(self.position_i)
+    def evaluate(self, funcao):
+        # Supondo que `self.position_i` seja uma lista com pelo menos dois elementos.
+        x = self.position_i[0]  # Primeiro elemento é x
+        z = self.position_i[2]  # Terceiro elemento é z
 
+        # Chama a função passando x e z
+        self.err_i = funcao(x, z)
+
+        # Atualiza o melhor erro e a melhor posição
         if self.err_i < self.err_best_i or self.err_best_i == -1:
             self.pos_best_i = self.position_i.copy()
             self.err_best_i = self.err_i
 
-    def update_velocity(self, pos_best_g):
-        w = 0.5
-        c1 = 1
-        c2 = 2
+    def atualizar_velocidade(self, pos_best_g):
+        w = 0.5  # CONSTANTE DE INERCIA
+        c1 = 1   # COGNITIVO
+        c2 = 2   # SOCIAL
 
-        for i in range(num_dimensions):
+        for i in range(dimensoes):
             r1 = random.random()
             r2 = random.random()
 
@@ -74,60 +89,55 @@ class Particle:
             vel_social = c2 * r2 * (pos_best_g[i] - self.position_i[i])
             self.velocity_i[i] = w * self.velocity_i[i] + vel_cognitiva + vel_social
 
-    def update_position(self, bounds):
-        for i in range(num_dimensions):
+    def atualizar_posicao(self, limites):
+        for i in range(dimensoes):
             self.position_i[i] = self.position_i[i] + self.velocity_i[i]
 
-            if self.position_i[i] > bounds[i][1]:
-                self.position_i[i] = bounds[i][1]
-            if self.position_i[i] < bounds[i][0]:
-                self.position_i[i] = bounds[i][0]
+            if self.position_i[i] > limites[i][1]:
+                self.position_i[i] = limites[i][1]
+            if self.position_i[i] < limites[i][0]:
+                self.position_i[i] = limites[i][0]
 
 class PSO:
-    def __init__(self, costFunc, x0, bounds, num_particles, maxiter):
-        global num_dimensions
-
-        num_dimensions = len(x0)
+    def __init__(self, funcao, inicio_particulas, limites, num_particulas, num_iteracoes):
         err_best_g = -1
         pos_best_g = []
 
-        swarm = []
-        for i in range(num_particles):
-            swarm.append(Particle(x0))
+        enxame = []
+        for i in range(num_particulas):
+            enxame.append(Particle(inicio_particulas))
 
-        # Inicializa o gráfico
-        fig = plt.figure()
+        # INICIALIZA O GRÁFICO
+        fig = plt.figure(figsize=(12, 12))
         ax = fig.add_subplot(111, projection='3d')
 
         i = 0
-        while i < maxiter:
-            for j in range(num_particles):
-                swarm[j].evaluate(costFunc)
+        while i < num_iteracoes:
+            for j in range(num_particulas):
+                enxame[j].evaluate(funcao)
 
-                if swarm[j].err_i < err_best_g or err_best_g == -1:
-                    pos_best_g = list(swarm[j].position_i)
-                    err_best_g = float(swarm[j].err_i)
+                if enxame[j].err_i < err_best_g or err_best_g == -1:
+                    pos_best_g = list(enxame[j].position_i)
+                    err_best_g = float(enxame[j].err_i)
 
-            for j in range(num_particles):
-                swarm[j].update_velocity(pos_best_g)
-                swarm[j].update_position(bounds)
+            for j in range(num_particulas):
+                enxame[j].atualizar_velocidade(pos_best_g)
+                enxame[j].atualizar_posicao(limites)
 
-            print(f"Iteração {i+1}")
-            for index, particle in enumerate(swarm):
-                print(f"Partícula {index+1}: Posição = {particle.position_i}")
+            # print(f"Iteração {i+1}")
+            # for index, particle in enumerate(swarm):
+            # print(f"Partícula {index+1}: Posição = {particle.position_i}")
             
-            plot_particles(swarm, i+1, ax)
+            plot_particles(enxame, i+1, ax)
 
             i += 1
 
-        print('/////////////// FINAL //////////////////')
-        print(f'POSICAO FINAL: {pos_best_g}')
+        print(f'  POSICAO FINAL: {pos_best_g}')
         print(f'RESULTADO FINAL: {err_best_g}')
 
-        plt.show()  # Mantém o gráfico final aberto
+        plt.show()  # MANTÉM O GRÁFICO FINAL ABERTO
 
-#--- EXECUTAR -----------------------------------------------------------------+
+def funcao(x, z):
+    return 2*x*z  # CORRESPONDE A 2 * X * Z
 
-initial = [5, 5, 5]
-bounds = [(-10, 10), (-10, 10), (-10, 10)]
-PSO(func_custom, initial, bounds, num_particles=20, maxiter=30)
+PSO(funcao, [10, 10, 10], [(-10, 10), (-10, 10), (-10, 10)], num_particulas=20, num_iteracoes=20)

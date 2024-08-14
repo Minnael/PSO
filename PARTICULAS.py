@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
+from PSO import PSO
+
 class Particle:
     def __init__(self, x0):
         self.position_i = []          # posição da partícula
@@ -11,7 +13,7 @@ class Particle:
         self.err_best_i = -1          # melhor erro individual
         self.err_i = -1               # erro individual
 
-        for i in range(num_dimensions):
+        for i in range(dimensoes):
             self.velocity_i.append(random.uniform(-1, 1))
             self.position_i.append(x0[i])
 
