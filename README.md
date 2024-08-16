@@ -15,7 +15,8 @@ POR MINNAEL CAMPELO DE OLIVEIRA
 No contexto da otimização matemática, encontrar o mínimo global de uma função complexa e não linear é uma tarefa desafiadora e de grande importância em diversas áreas, como engenharia, economia e ciência de dados. O problema em questão é a minimização da seguinte função: </br></br> 
 
 <div align="center">
-<img src="Imagens/figura1.png" width="550" height="70" alt="Descrição da Imagem" /></br> 
+
+<img src="https://raw.githubusercontent.com/Minnael/PSO/main/Imagens/figura1.png" width="550" height="70" alt="Descrição da Imagem" /></br> 
 Figura 1 - Função objetivo a ser minimizada.
 </div></br> 
 
