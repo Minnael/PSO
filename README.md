@@ -15,7 +15,7 @@ POR MINNAEL CAMPELO DE OLIVEIRA
 No contexto da otimização matemática, encontrar o mínimo global de uma função complexa e não linear é uma tarefa desafiadora e de grande importância em diversas áreas, como engenharia, economia e ciência de dados. O problema em questão é a minimização da seguinte função: </br></br> 
 
 <div align="center">
-<img src="imagens/figura1.png" width="550" height="70" alt="Descrição da Imagem" /></br> 
+<img src="Imagens/figura1.png" width="550" height="70" alt="Descrição da Imagem" /></br> 
 Figura 1 - Função objetivo a ser minimizada.
 </div></br> 
 
@@ -24,7 +24,7 @@ Figura 1 - Função objetivo a ser minimizada.
 Vale salientar que essa função apresenta características de múltiplos mínimos locais devido à sua natureza oscilatória e a presença de termos envolvendo seno e raiz quadrada, o que faz com que seja difícil localizar o mínimo global utilizando métodos de otimização clássicos devido à possibilidade de convergência para mínimos locais. Nesse cenário, surge a necessidade de empregar algoritmos de otimização estocásticos e bioinspirados, como o Algoritmo de Otimização por Enxame de Partículas (PSO) ou Algoritmos Genéticos (AG), que possuem maior potencial para escapar de mínimos locais e localizar a solução global. Dessa forma, para melhor compreensão do comportamento da função segue abaixo uma imagem representativa:
 
 <div align="center">
-<img src="imagens/figura2.png" width="550" height="400" alt="Descrição da Imagem" /></br> 
+<img src="Imagens/figura2.png" width="550" height="400" alt="Descrição da Imagem" /></br> 
 Figura 2 - Esboço da função com a melhor qualidade possível.
 </div></br> 
 
@@ -52,7 +52,7 @@ O Algoritmo de Otimização por Enxame de Partículas (PSO) é uma técnica de o
 Para o fator de inércia foi utilizada a técnica de redução linear da ponderação da inércia dado por:
 
 <div align="center">
-<img src="imagens/figura3.png" width="550" height="100" alt="Descrição da Imagem" /></br> 
+<img src="Imagens/figura3.png" width="550" height="100" alt="Descrição da Imagem" /></br> 
 Figura 3 - Redução linear da ponderação da inércia.
 </div></br> 
 
