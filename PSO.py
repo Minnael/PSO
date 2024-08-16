@@ -14,8 +14,8 @@ def alternar_pausa(event):
 
 class PSO:
     def __init__(self, funcao, limites, num_particulas, num_iteracoes):
-        err_best_g = -1
-        pos_best_g = []
+        melhor_valor_g = -1
+        melhor_posicao_g = []
 
         enxame = []
         for i in range(num_particulas):
@@ -36,14 +36,14 @@ class PSO:
         i = 0
         while i < num_iteracoes:
             for j in range(num_particulas):
-                enxame[j].evaluate(funcao)
+                enxame[j].avaliar(funcao)
 
-                if enxame[j].err_i < err_best_g or err_best_g == -1:
-                    pos_best_g = list(enxame[j].posicao_i)
-                    err_best_g = float(enxame[j].err_i)
+                if enxame[j].valor_atual_i < melhor_valor_g or melhor_valor_g == -1:
+                    melhor_posicao_g = list(enxame[j].posicao_i)
+                    melhor_valor_g = float(enxame[j].valor_atual_i)
 
             for j in range(num_particulas):
-                enxame[j].atualizar_velocidade(pos_best_g, i, num_iteracoes)
+                enxame[j].atualizar_velocidade(melhor_posicao_g, i, num_iteracoes)
                 enxame[j].atualizar_posicao(limites)
 
             # print(f"Iteração {i+1}")
@@ -58,7 +58,7 @@ class PSO:
 
             i += 1
 
-        print(f'  POSICAO FINAL: {pos_best_g}')
-        print(f'RESULTADO FINAL: {err_best_g}')
+        print(f'POSICAO FINAL: {melhor_posicao_g}')
+        print(f'RESULTADO FINAL: {melhor_valor_g}')
 
         plt.show()  # MANTÉM O GRÁFICO FINAL ABERTO
