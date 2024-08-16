@@ -16,7 +16,7 @@ No contexto da otimização matemática, encontrar o mínimo global de uma funç
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/Minnael/PSO/main/Imagens/figura1.png" width="550" height="70" alt="Descrição da Imagem" /></br> 
+<img src="Imagens/figura1.png" width="550" height="70" alt="Descrição da Imagem" /></br> 
 Figura 1 - Função objetivo a ser minimizada.
 </div></br> 
 
