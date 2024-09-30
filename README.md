@@ -68,8 +68,8 @@ Os algoritmos genéticos aplicam operações de seleção, cruzamento (crossover
 <Strong>Parâmetros utilizados dentro do algoritmo genético:</Strong></br></br>
 <blockquote>
 -> Limites: [-500, 500];</br>
--> População: 250; </br>
--> Número de gerações: 250;; </br>
+-> População: 30; </br>
+-> Número de gerações: 1000;; </br>
 -> Taxa de mutação: 1% </br>
 -> Taxa de cruzamento (crossover): 70%; </br>
 </blockquote></br>
